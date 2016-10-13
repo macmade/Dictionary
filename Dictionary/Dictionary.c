@@ -413,18 +413,15 @@ void DictionaryResize( DictionaryRef d, size_t size )
     d2->callbacks.kRetain = NULL;
     d2->callbacks.vRetain = NULL;
     
-    if( d->items != NULL )
+    for( i = 0; i < d->size; i++ )
     {
-        for( i = 0; i < d->size; i++ )
+        item = d->items[ i ];
+        
+        while( item )
         {
-            item = d->items[ i ];
+            DictionaryInsert( d2, item->key, item->value );
             
-            while( item )
-            {
-                DictionaryInsert( d2, item->key, item->value );
-                
-                item = item->next;
-            }
+            item = item->next;
         }
     }
     
@@ -434,6 +431,29 @@ void DictionaryResize( DictionaryRef d, size_t size )
     
     DictionarySwap( d, d2 );
     DictionaryDelete( d2 );
+}
+
+void DictionaryApplyFunction( DictionaryRef d, void ( * f )( const void *, const void * ) )
+{
+    size_t                  i;
+    struct DictionaryItem * item;
+    
+    if( d == NULL || d->items == NULL || f == NULL )
+    {
+        return;
+    }
+    
+    for( i = 0; i < d->size; i++ )
+    {
+        item = d->items[ i ];
+        
+        while( item )
+        {
+            f( item->key, item->value );
+            
+            item = item->next;
+        }
+    }
 }
 
 DictionaryCallbacks DictionaryStandardStringCallbacks( void )

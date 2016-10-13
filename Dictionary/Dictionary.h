@@ -64,6 +64,7 @@ size_t        DictionaryGetCount( DictionaryRef d );
 void          DictionaryShow( DictionaryRef d );
 void          DictionarySwap( DictionaryRef d1, DictionaryRef d2 );
 void          DictionaryResize( DictionaryRef d, size_t size );
+void          DictionaryApplyFunction( DictionaryRef d, void ( * f )( const void *, const void * ) );
 
 DictionaryCallbacks DictionaryStandardStringCallbacks( void );
 DictionaryHashCode  DictionaryHashStringCallback( const void * key );

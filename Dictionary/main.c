@@ -45,6 +45,12 @@ static void randomString( char * dest, size_t length )
     *( dest ) = 0;
 }
 
+static void f( const void * k, const void * v );
+static void f( const void * k, const void * v )
+{
+    fprintf( stderr, "%s: %s\n", ( const char * )k, ( const char * )v );
+}
+
 int main( void )
 {
     {
@@ -126,6 +132,30 @@ int main( void )
         DictionaryClear( d );
         DictionaryShow( d );
         DictionaryInsert( d, "foo", "bar" );
+        DictionaryShow( d );
+        DictionaryDelete( d );
+    }
+    
+    fprintf( stderr, "--------------------------------------------------------------------------------\n" );
+    
+    {
+        DictionaryRef       d;
+        DictionaryCallbacks c;
+        size_t              i;
+        char                k[ 5 ];
+        char                v[ sizeof( k ) ];
+        
+        c = DictionaryStandardStringCallbacks();
+        d = DictionaryCreate( 10, &c );
+        
+        for( i = 1; i < sizeof( k ); i++ )
+        {
+            randomString( k, i );
+            randomString( v, i );
+            DictionaryInsert( d, k, v );
+        }
+        
+        DictionaryApplyFunction( d, f );
         DictionaryShow( d );
         DictionaryDelete( d );
     }
