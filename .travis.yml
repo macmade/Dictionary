@@ -1,0 +1,3 @@
+language: objective-c
+xcode_project: Dictionary.xcodeproj
+xcode_scheme: Dictionary
